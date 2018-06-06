@@ -81,7 +81,8 @@
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 #include <Arduino.h>
-#include <SPI.h>
+#include "VirtualSPI.h"
+#include "HardwareSPI.h"
 
 // Firmware data for self-test
 // Reference values based on firmware version
@@ -331,7 +332,7 @@ public:
 	// Functions for setting up the Arduino
 	/////////////////////////////////////////////////////////////////////////////////////
 	MFRC522(const byte chipSelectPin, const byte resetPowerDownPin,
-			SPIClass *spiClass = &SPI, const SPISettings spiSettings = SPISettings(SPI_CLOCK_DIV4, MSBFIRST, SPI_MODE0))
+			VirtualSPIClass *spiClass = &HardwareSPI, const VirtualSPISettings spiSettings = VirtualSPISettings(HardwareSPI_CLOCK_DIV16, MSBFIRST, HardwareSPI_MODE0))
 			: _chipSelectPin(chipSelectPin), _resetPowerDownPin(resetPowerDownPin),
 			  _spiClass(spiClass), _spiSettings(spiSettings) {};
 	MFRC522() : MFRC522(UNUSED_PIN, UNUSED_PIN) {};
@@ -422,12 +423,12 @@ public:
 protected:
 	// Pins
 	byte _chipSelectPin;		// Arduino pin connected to MFRC522's SPI slave select input (Pin 24, NSS, active low)
-	byte _resetPowerDownPin;	// Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)
-	
+	byte _resetPowerDownPin;	// Arduino pin connected to MFRC522's reset and power down input (Pin 6, NRSTPD, active low)4
+
 	// SPI communication
-	SPIClass *_spiClass;		// SPI class which abstracts hardware.
-	const SPISettings _spiSettings;	// SPI settings.
-	
+	VirtualSPIClass *_spiClass;		// SPI class which abstracts hardware.
+	const VirtualSPISettings _spiSettings;	// SPI settings.
+
 	// Functions for communicating with MIFARE PICCs
 	StatusCode MIFARE_TwoStepHelper(byte command, byte blockAddr, int32_t data);
 };
